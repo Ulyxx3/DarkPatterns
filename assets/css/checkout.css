@@ -1,0 +1,8 @@
+/* Checkout specific overrides — already mostly in darkpatterns.css */
+/* This file imports and adds any remaining checkout utility styles */
+
+.checkout-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+}
