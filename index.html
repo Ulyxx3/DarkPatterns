@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DarkBuy™ — Les Meilleures Affaires du Monde Entier Garanti</title>
+    <meta name="description"
+        content="DarkBuy™ - Achetez MAINTENANT avant que les prix n'explosent ! Livraison GRATUITE* dès 0€ d'achat.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/darkpatterns.css">
+</head>
+
+<body>
+
+    <div id="site-header-placeholder"></div>
+
+    <!-- FLASH SALE BAR -->
+    <div class="flash-sale-bar">
+        🔥 VENTE FLASH — Se termine dans <span class="global-timer">04:32:11</span> — STOCKS ULTRA LIMITÉS — NE RATEZ
+        PAS ÇA 🔥
+    </div>
+
+    <!-- SOCIAL PROOF STRIP -->
+    <div class="social-strip">
+        <span>🛒 <strong id="recent-buyers">127</strong> achats dans les dernières 24h</span>
+        <span>👁️ <strong class="viewers-count">47</strong> personnes sur ce site en ce moment</span>
+        <span>⭐ Note: 4.9/5 basée sur <strong>4,7M</strong> d'avis</span>
+        <span>🚀 Livraison express disponible (frais s'appliquent)</span>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">
+                <span class="viewer-dot"
+                    style="width:6px;height:6px;background:var(--accent-red);border-radius:50%;display:inline-block;animation:viewerPulse 1.5s infinite;margin-right:4px"></span>
+                🔥 OFFRE EXCLUSIVE LIMITÉE — AUJOURD'HUI SEULEMENT
+            </div>
+            <h1>Bienvenue sur <span>DarkBuy™</span><br>Vos Achats, Vos Regrets</h1>
+            <p class="hero-sub">Découvrez des produits révolutionnaires à des prix impossibles* pendant une durée
+                ultra-limitée**. Rejoignez nos millions de clients très satisfaits***!</p>
+            <div class="hero-cta">
+                <a href="#products" class="btn-primary">🛒 Profiter des offres MAINTENANT</a>
+                <a href="cart.html" class="btn-secondary" style="font-size:.85rem">⚡ Voir mon offre personnalisée†</a>
+            </div>
+            <p
+                style="font-size:.6rem;color:var(--text-muted);margin-bottom:2rem;max-width:700px;margin-left:auto;margin-right:auto">
+                *Prix impossibles par rapport à nos propres prix gonflés. **Durée limitée recalculée toutes les heures.
+                ***Satisfaction mesurée selon notre propre méthodologie. †Offre personnalisée = abonnement mensuel
+                automatique.
+            </p>
+            <div class="hero-stats">
+                <div><span class="hero-stat-value" id="hero-clients">4 738 291</span><span
+                        class="hero-stat-label">Clients "satisfaits"</span></div>
+                <div><span class="hero-stat-value">97%</span><span class="hero-stat-label">Taux de satisfaction (calculé
+                        par nous)</span></div>
+                <div><span class="hero-stat-value">-90%</span><span class="hero-stat-label">de réduction max (sur 1
+                        article de 1€)</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CATEGORY FILTER -->
+    <section class="container" style="padding-top:2rem">
+        <div id="cat-filters" style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem"></div>
+    </section>
+
+    <!-- PRODUCTS GRID -->
+    <section class="container section" id="products">
+        <div
+            style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;margin-bottom:.5rem">
+            <div>
+                <h2 class="section-title">Offres <span>Impossibles</span> du Moment 🔥</h2>
+                <p class="section-subtitle">Stock ultra-limité • Prix remontent dans <strong class="global-timer"
+                        style="color:var(--accent-red)">04:32:11</strong></p>
+            </div>
+            <select
+                style="background:var(--bg-card);border:1px solid var(--border-bright);color:var(--text-secondary);padding:.5rem 1rem;border-radius:8px;font-size:.82rem;cursor:pointer">
+                <option>Trier: Recommandés pour Vous (payant)</option>
+                <option>Prix croissant (affiché sans frais)</option>
+                <option>Nouveautés (toutes datent de 2019)</option>
+            </select>
+        </div>
+        <div class="products-grid" id="products-grid"></div>
+        <div style="text-align:center;margin-top:3rem">
+            <button class="btn-secondary" onclick="loadMore()" id="load-more-btn">Voir encore plus d'offres incroyables
+                ↓</button>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section
+        style="background:var(--bg-secondary);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:3rem 0">
+        <div class="container">
+            <h2 class="section-title text-center" style="margin-bottom:.5rem">Ce que disent nos clients <span>très
+                    satisfaits</span></h2>
+            <p class="section-subtitle text-center">4,7M d'avis — tous vérifiés par notre équipe (nous-mêmes)</p>
+            <div id="reviews-grid"
+                style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem"></div>
+            <p style="text-align:center;font-size:.6rem;color:#222;margin-top:1.5rem">* Les avis négatifs (99.3% du
+                total) sont filtrés pour "qualité de contenu".</p>
+        </div>
+    </section>
+
+    <!-- FINAL URGENCY -->
+    <section class="container" style="padding:3rem 0;text-align:center">
+        <div
+            style="background:linear-gradient(135deg,#1a0a0a,#1a0a2e);border:1px solid rgba(239,68,68,.3);border-radius:var(--radius-xl);padding:3rem;max-width:700px;margin:0 auto">
+            <h2 style="margin-bottom:.75rem">⏰ Dernière chance !</h2>
+            <p style="color:var(--text-secondary);margin-bottom:1.5rem">Les prix remontent dans exactement <strong
+                    style="color:var(--accent-red)" class="global-timer">04:32:11</strong></p>
+            <a href="product.html?id=1" class="btn-primary" style="font-size:1.1rem;padding:1rem 3rem">🚀 Profiter
+                MAINTENANT avant qu'il soit trop tard</a>
+            <p style="font-size:.7rem;color:var(--text-muted);margin-top:1rem">⚠️ En cliquant, vous acceptez notre offre
+                VIP à 14,99€/mois (annulable après 12 mois en écrivant à notre siège)</p>
+        </div>
+    </section>
+
+    <div id="site-footer-placeholder"></div>
+
+    <script src="assets/js/products.js"></script>
+    <script src="assets/js/store.js"></script>
+    <script src="assets/js/components.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Render header/footer
+        renderHeader('DarkBuy™ — Les Meilleures Affaires GARANTIES');
+        renderFooter();
+
+        // Render category filters
+        const cats = ['Tous', 'Tech', 'Beauté', 'Sport', 'Audio', 'Mode', 'Gaming'];
+        document.getElementById('cat-filters').innerHTML = cats.map(c =>
+            `<button onclick="filterCat('${c}')" class="cat-btn ${c === 'Tous' ? 'active' : ''}" data-cat="${c}">${c}</button>`
+        ).join('');
+
+        // PRODUCT CARD RENDERER
+        const BADGES = [['badge-sale', 'badge-hot'], ['badge-sale'], ['badge-sale', 'badge-hot'], ['badge-sale'], ['badge-sale', 'badge-new'], ['badge-sale', 'badge-hot']];
+        const TIMERS = ['01:47', '00:23', '03:12', '02:55', '00:08', '04:01'];
+        const VIEWERS = [47, 23, 89, 31, 67, 14];
+        const IS_FIRE = [true, false, true, false, false, true];
+
+        function productCardHTML(p, i) {
+            const disc = getDiscount(p);
+            const badgeHTML = [
+                `<span class="badge badge-sale">-${disc}%</span>`,
+                i % 2 === 0 ? '<span class="badge badge-hot">🔥 HOT</span>' : '',
+                i === 0 ? '<span class="badge badge-limited">⚡ Limité</span>' : '',
+                i === 4 ? '<span class="badge badge-new">NEW</span>' : '',
+            ].join('');
+            return `
+<div class="product-card ${IS_FIRE[i] ? 'card-fire' : ''}" data-cat="${p.category}"
+     onclick="window.location='product.html?id=${p.id}'">
+  <img src="${p.image}" alt="${p.name}" class="product-card-img">
+  <div class="product-card-body">
+    <div class="product-badge-row">${badgeHTML}</div>
+    <div class="product-card-name">${p.name}</div>
+    <div class="product-card-tagline">${p.tagline}</div>
+    <div class="product-card-fomo">
+      <span class="dot"></span>
+      <span class="viewer-dot" style="width:5px;height:5px;background:#f97316;border-radius:50%;animation:viewerPulse 1.5s infinite;display:inline-block"></span>
+      <span>${VIEWERS[i] + Math.floor(Math.random() * 10)} personnes regardent</span>
+    </div>
+    <div class="stock-meter"><div class="stock-fill"></div></div>
+    <div class="product-card-stock">⚠️ Plus que ${p.stock} en stock !</div>
+    <div class="product-card-rating">
+      <span class="stars">★★★★★</span>
+      <span style="font-size:.8rem;font-weight:600">${p.rating}</span>
+      <span class="rating-count">(${p.reviews.toLocaleString('fr-FR')} avis)</span>
+    </div>
+    <div class="product-card-pricing">
+      <span class="price-current">${p.price.toFixed(2)}€</span>
+      <span class="price-original">${p.fakeOriginalPrice.toFixed(2)}€</span>
+      <span class="price-discount">-${disc}%</span>
+    </div>
+    <div class="product-card-timer">
+      <span style="color:var(--text-muted);font-size:.72rem">⏰ Prix remonte dans :</span>
+      <span class="product-timer-count">${TIMERS[i]}</span>
+    </div>
+    <button class="btn-primary" style="width:100%;justify-content:center;padding:.75rem"
+            onclick="event.stopPropagation();addToCartUI(${p.id})">
+      🛒 Ajouter au panier
+    </button>
+    <button class="btn-ghost" style="width:100%;text-align:center;margin-top:.5rem"
+            onclick="event.stopPropagation()">
+      Non merci, je préfère payer plein tarif
+    </button>
+  </div>
+</div>`;
+        }
+
+        function renderProducts(catFilter = 'Tous') {
+            const grid = document.getElementById('products-grid');
+            const items = getAllProducts().filter(p => catFilter === 'Tous' || p.category === catFilter);
+            grid.innerHTML = items.map((p, i) => productCardHTML(p, i)).join('');
+            // Product timers
+            document.querySelectorAll('.product-timer-count').forEach(el => {
+                let parts = el.textContent.split(':');
+                let total = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+                setInterval(() => {
+                    if (total <= 0) total = 240 + Math.floor(Math.random() * 300);
+                    total--;
+                    el.textContent = `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
+                }, 1000);
+            });
+        }
+        renderProducts();
+
+        function filterCat(cat) {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`[data-cat="${cat}"]`)?.classList.add('active');
+            renderProducts(cat);
+        }
+
+        // Fake reviews
+        const FAKE_REVIEWS = [
+            { avatar: '👩', name: 'Marie D.', verified: true, text: "INCROYABLE ! Livraison en 47 jours, sac en plastique très beau !" },
+            { avatar: '🧔', name: 'Jean-Marc L.', verified: true, text: "La crème miracle m'a rendu ruiné ET toujours vieux. 5 étoiles pour le packaging premium." },
+            { avatar: '👱‍♀️', name: 'Sophie R.', verified: true, text: "Montre reçue ! GPS non inclus, diamants en plastique, heure fausse. PARFAIT pour ma collection d'arnaques !" },
+            { avatar: '🙋‍♂️', name: 'Kevin M.', verified: true, text: "Suppléments quantiques = muscles toujours en attente. Délicieux ! Note 5/5 pour le goût de carton." },
+            { avatar: '👨‍🔬', name: 'Prof. A. Expert', verified: false, text: '"Scientifiquement, ces produits dépassent toute logique." — Ce commentaire a été modifié par notre équipe ✅' },
+            { avatar: '⭐', name: 'Une Célébrité™', verified: true, text: "J'utilise DarkBuy tous les jours ! [publicité non divulguée comme la loi l'exige et que nous ignorons]" },
+        ];
+        document.getElementById('reviews-grid').innerHTML = FAKE_REVIEWS.map(r => `
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem">
+    <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem">
+      <div style="width:40px;height:40px;background:var(--gradient-purple);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem">${r.avatar}</div>
+      <div>
+        <div style="font-weight:700;font-size:.88rem">${r.name}</div>
+        <div style="font-size:.65rem;color:var(--text-muted)">${r.verified ? '✅ Achat vérifié' : '🤔 Source: inconnu'}</div>
+      </div>
+      <div style="margin-left:auto;color:var(--accent-amber);font-size:.85rem">★★★★★</div>
+    </div>
+    <p style="font-size:.8rem;color:var(--text-secondary);line-height:1.5;font-style:italic">"${r.text}"</p>
+  </div>`).join('');
+
+        // Hero counter
+        let heroN = 4738291;
+        setInterval(() => {
+            heroN += Math.floor(Math.random() * 3);
+            document.getElementById('hero-clients').textContent = heroN.toLocaleString('fr-FR');
+        }, 2000);
+
+        // Recent buyers
+        setInterval(() => {
+            const el = document.getElementById('recent-buyers');
+            if (el) el.textContent = 100 + Math.floor(Math.random() * 80);
+        }, 5000);
+
+        // Add to cart
+        function addToCartUI(id) {
+            Store.addToCart(id);
+            const toast = document.createElement('div');
+            toast.className = 'fomo-toast';
+            toast.style.cssText = 'left:auto;right:1.5rem;bottom:5rem';
+            toast.innerHTML = `<div class="fomo-toast-avatar" style="background:linear-gradient(135deg,#10b981,#059669)">✅</div>
+    <div><strong style="display:block;font-size:.78rem">Ajouté au panier !</strong>
+    <a href="cart.html" style="font-size:.72rem;color:var(--accent-red);font-weight:600">Passer commande →</a></div>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 5000);
+        }
+
+        // Load more (infinite scroll trap)
+        let loadCount = 0;
+        function loadMore() {
+            const grid = document.getElementById('products-grid');
+            const cards = [...grid.querySelectorAll('.product-card')];
+            cards.forEach(c => grid.appendChild(c.cloneNode(true)));
+            loadCount++;
+            if (loadCount >= 3) {
+                document.getElementById('load-more-btn').textContent = 'Vous avez tout vu ! Mais regardez quand même ↓';
+                loadCount = 0;
+            }
+        }
+    </script>
+    <style>
+        .cat-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-bright);
+            color: var(--text-secondary);
+            padding: .5rem 1.25rem;
+            border-radius: 50px;
+            font-size: .82rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all .2s;
+        }
+
+        .cat-btn:hover,
+        .cat-btn.active {
+            background: var(--gradient-accent);
+            color: white;
+            border-color: transparent;
+        }
+    </style>
+</body>
+
+</html>

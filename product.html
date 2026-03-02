@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produit — DarkBuy™</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/darkpatterns.css">
+</head>
+
+<body>
+    <div id="site-header-placeholder"></div>
+
+    <!-- Breadcrumb -->
+    <div
+        style="background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:.6rem 2rem;font-size:.78rem;color:var(--text-muted)">
+        <div class="container">
+            <a href="index.html" style="color:var(--accent-red)">DarkBuy™</a> ›
+            <span id="bc-cat"></span> ›
+            <span id="bc-name" style="color:var(--text-primary)"></span>
+        </div>
+    </div>
+
+    <div class="container" style="padding-top:2.5rem;padding-bottom:2.5rem" id="product-root"></div>
+
+    <div id="site-footer-placeholder"></div>
+
+    <script src="assets/js/products.js"></script>
+    <script src="assets/js/store.js"></script>
+    <script src="assets/js/components.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        const params = new URLSearchParams(location.search);
+        const id = parseInt(params.get('id') || '1');
+        const p = getProduct(id);
+
+        if (!p) { location.href = 'index.html'; }
+        else {
+            renderHeader(`${p.name} — DarkBuy™ | Offre EXCLUSIVE se terminant DANS PEU DE TEMPS`);
+            renderFooter();
+            document.getElementById('bc-cat').textContent = p.category;
+            document.getElementById('bc-name').textContent = p.name;
+
+            const disc = getDiscount(p);
+            const others = getAllProducts().filter(x => x.id !== p.id);
+
+            document.getElementById('product-root').innerHTML = `
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start">
+    <!-- IMAGE -->
+    <div>
+      <div style="background:linear-gradient(135deg,#1a1a26,#12121d);border-radius:var(--radius-xl);padding:2.5rem;border:1px solid var(--border);position:relative">
+        <div style="position:absolute;top:1rem;left:1rem;background:var(--gradient-gold);color:#000;font-size:.6rem;font-weight:900;padding:4px 10px;border-radius:6px">🏆 BEST SELLER</div>
+        <div style="position:absolute;top:1rem;right:1rem;background:var(--accent-red);color:white;font-size:.65rem;font-weight:900;padding:4px 10px;border-radius:6px;animation:pulse-badge 1s infinite">-${disc}%</div>
+        <img src="${p.image}" alt="${p.name}" style="width:100%;max-height:380px;object-fit:contain">
+      </div>
+      <div style="display:flex;gap:1rem;justify-content:center;margin-top:1rem;flex-wrap:wrap">
+        <span style="font-size:.72rem;color:var(--text-muted)">🔒 Paiement sécurisé</span>
+        <span style="font-size:.72rem;color:var(--text-muted)">↩️ Retour facile*</span>
+        <span style="font-size:.72rem;color:var(--text-muted)">📦 Livraison rapide**</span>
+      </div>
+      <p style="font-size:.55rem;color:#222;text-align:center;margin-top:.25rem">*Retour sous 7j si emballage non ouvert. **Rapide = 14-47 jours ouvrés</p>
+    </div>
+
+    <!-- INFO -->
+    <div>
+      <div style="display:flex;gap:.5rem;margin-bottom:.75rem;flex-wrap:wrap">
+        <span class="badge badge-hot">🔥 HOT</span>
+        <span class="badge badge-sale">-${disc}%</span>
+        <span class="badge badge-limited">⚡ Stock limité</span>
+      </div>
+      <h1 style="font-size:1.6rem;margin-bottom:.4rem">${p.name}</h1>
+      <p style="color:var(--text-secondary);margin-bottom:1rem;font-style:italic">${p.tagline}</p>
+
+      <div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);border-radius:var(--radius-md);padding:.75rem;margin-bottom:1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+        <span style="font-size:.8rem;color:var(--text-secondary)">
+          <span class="viewer-dot" style="width:6px;height:6px;background:#f97316;border-radius:50%;animation:viewerPulse 1.5s infinite;display:inline-block;margin-right:4px"></span>
+          <strong id="prod-viewers">47</strong> personnes regardent EN CE MOMENT
+        </span>
+        <span style="font-size:.8rem;color:var(--accent-orange)">🛒 <strong>23</strong> ajoutés dans les 2 dernières heures</span>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem">
+        <span style="color:var(--accent-amber);font-size:1.1rem;letter-spacing:2px">★★★★★</span>
+        <span style="font-weight:700">${p.rating}/5</span>
+        <span style="color:var(--text-muted);font-size:.82rem">${p.reviews.toLocaleString('fr-FR')} avis</span>
+        <a href="#reviews" style="font-size:.72rem;color:var(--accent-red)">Voir les avis 5★ →</a>
+      </div>
+
+      <div style="margin-bottom:1.5rem">
+        <div style="display:flex;align-items:baseline;gap:.75rem;margin-bottom:.25rem">
+          <span style="font-size:2rem;font-weight:900">${p.price.toFixed(2)}€</span>
+          <span style="color:var(--text-muted);text-decoration:line-through;font-size:1rem">${p.fakeOriginalPrice.toFixed(2)}€</span>
+          <span style="background:rgba(16,185,129,.15);color:var(--accent-emerald);font-size:.8rem;font-weight:700;padding:3px 8px;border-radius:4px">Économie: ${(p.fakeOriginalPrice - p.price).toFixed(2)}€</span>
+        </div>
+        <p style="font-size:.7rem;color:var(--text-muted)">Prix TTC + frais de traitement (affichés à la caisse) + assurance obligatoire</p>
+        <p style="font-size:.68rem;color:#333;margin-top:2px">Prix final estimé : entre ${p.price.toFixed(2)}€ et ${(p.cartPrice + 19.99).toFixed(2)}€ (selon options)</p>
+      </div>
+
+      <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:var(--radius-md);padding:1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <p style="font-size:.78rem;color:var(--text-secondary);margin-bottom:4px">⏰ Ce prix exceptionnel expire dans :</p>
+          <div style="font-size:2rem;font-weight:900;color:var(--accent-red);font-family:'Space Grotesk',monospace;letter-spacing:4px" id="prod-timer">01:47:23</div>
+        </div>
+        <div style="text-align:right">
+          <p style="font-size:.68rem;color:var(--text-muted)">Après expiration:</p>
+          <p style="font-size:1rem;font-weight:700;color:var(--accent-orange)">${p.fakeOriginalPrice.toFixed(2)}€</p>
+        </div>
+      </div>
+
+      <!-- Features -->
+      <div style="margin-bottom:1.25rem">
+        ${p.features.map(f => `<div style="font-size:.82rem;color:var(--text-secondary);padding:.3rem 0;border-bottom:1px solid var(--border);line-height:1.4">${f}</div>`).join('')}
+      </div>
+
+      <!-- Pre-checked subscription (DARK PATTERN) -->
+      <div style="background:var(--bg-secondary);border:2px solid rgba(245,158,11,.4);border-radius:var(--radius-md);padding:1rem;margin-bottom:1rem;position:relative">
+        <div style="position:absolute;top:-10px;right:10px;background:var(--accent-amber);color:#000;font-size:.55rem;font-weight:900;padding:2px 8px;border-radius:4px">★ RECOMMANDÉ</div>
+        <label style="display:flex;align-items:flex-start;gap:.75rem;cursor:pointer">
+          <input type="checkbox" id="sub-check" checked style="margin-top:2px;width:18px;height:18px;accent-color:var(--accent-red)">
+          <div>
+            <strong style="font-size:.88rem;display:block;margin-bottom:2px">Ajouter ${p.subscriptionLabel} — ${p.subscriptionPrice.toFixed(2)}€/mois</strong>
+            <span style="font-size:.72rem;color:var(--text-muted)">Protection complète, mises à jour, accès VIP (résiliable après 12 mois minimum, préavis 90j)</span>
+          </div>
+        </label>
+      </div>
+
+      <!-- Quantity (default 2 — DARK PATTERN) -->
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
+        <label style="font-size:.85rem;font-weight:600;color:var(--text-secondary)">Quantité :</label>
+        <select id="qty-select" style="background:var(--bg-card);border:1px solid var(--border-bright);color:var(--text-primary);padding:.5rem 1rem;border-radius:8px;font-size:.9rem">
+          <option value="1">1</option>
+          <option value="2" selected>2 (★ Pack Duo recommandé)</option>
+          <option value="3">3 (Famille)</option>
+          <option value="5">5 (Pro Pack)</option>
+        </select>
+        <span style="font-size:.72rem;color:var(--accent-orange)">⚡ Quantité limitée</span>
+      </div>
+
+      <button class="btn-primary" style="width:100%;font-size:1.1rem;padding:1rem;justify-content:center;margin-bottom:.75rem" onclick="addToCartFromProduct()">
+        🛒 Ajouter au panier — ${p.price.toFixed(2)}€*
+      </button>
+      <a href="cart.html" class="btn-secondary" style="display:block;text-align:center;padding:.85rem">⚡ Acheter maintenant (sans review)</a>
+      <p style="text-align:center;font-size:.7rem;color:var(--text-muted);margin-top:.75rem;cursor:pointer" onclick="history.back()">
+        Non merci, je préfère manquer cette opportunité unique et regretter toute ma vie
+      </p>
+      <p style="text-align:center;font-size:.6rem;color:#333;margin-top:.5rem">
+        *Prix affiché hors frais de traitement (6,99€), livraison (9,99€), assurance (4,99€) et abonnement inclus automatiquement
+      </p>
+    </div>
+  </div>
+
+  <!-- Description + Reviews + Sidebar -->
+  <div style="margin-top:3rem;display:grid;grid-template-columns:2fr 1fr;gap:2rem;align-items:start">
+    <div>
+      <h2 style="margin-bottom:1rem">Description du produit</h2>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem">
+        <p style="color:var(--text-secondary);line-height:1.7;font-size:.9rem">${p.description}</p>
+      </div>
+
+      <h3 id="reviews" style="margin-top:2rem;margin-bottom:1rem">
+        Avis clients ★★★★★ <span style="font-size:.75rem;color:var(--text-muted)">(seuls les avis positifs sont affichés)</span>
+      </h3>
+      ${[
+                    { u: 'J***e', d: 'il y a 2 jours', t: "PARFAIT !! Exactement comme décrit, je recommande à 100000% !!!! ⭐⭐⭐⭐⭐" },
+                    { u: 'M***c', d: 'il y a 1 semaine', t: "Livraison rapide. Produit conforme. Ma femme adore. Mon chien aussi. 5 étoiles." },
+                    { u: 'P***e Expert', d: 'il y a 3 jours', t: '"En tant que professionnel de santé certifié, ce produit est révolutionnaire" [avis sponsorisé non divulgué]' },
+                    { u: 'A***a', d: 'il y a 1 mois', t: "4 étoiles car le colis était légèrement froissé. Sinon INCROYABLE. — Note: cet avis 4 étoiles a failli être supprimé." },
+                ].map(r => `
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:1rem;margin-bottom:.75rem">
+        <div style="display:flex;justify-content:space-between;margin-bottom:.5rem">
+          <div style="display:flex;align-items:center;gap:.75rem">
+            <div style="width:32px;height:32px;background:var(--gradient-accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem">👤</div>
+            <div>
+              <div style="font-size:.82rem;font-weight:600">${r.u}</div>
+              <div style="font-size:.65rem;color:var(--text-muted)">✅ Achat vérifié • ${r.d}</div>
+            </div>
+          </div>
+          <span style="color:var(--accent-amber)">★★★★★</span>
+        </div>
+        <p style="font-size:.82rem;color:var(--text-secondary);font-style:italic">"${r.t}"</p>
+      </div>`).join('')}
+      <div style="background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.1);border-radius:var(--radius-sm);padding:.75rem;margin-top:.5rem">
+        <p style="font-size:.65rem;color:#444">📢 23,847 avis disponibles • 99.3% négatifs filtrés • <a href="#" style="color:#333;text-decoration:underline">Avis négatifs</a> (accès premium requis, 9,99€/mois)</p>
+      </div>
+    </div>
+
+    <!-- SIDEBAR: pre-checked bundle (DARK PATTERN) -->
+    <div style="position:sticky;top:80px">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem">
+        <h4 style="margin-bottom:1rem;font-size:.9rem">🛍️ Souvent achetés ensemble<br><span style="font-size:.7rem;color:var(--text-muted)">(ajoutés automatiquement au panier)</span></h4>
+        ${others.slice(0, 2).map(o => `
+        <div style="display:flex;gap:.75rem;align-items:center;padding:.75rem 0;border-bottom:1px solid var(--border)">
+          <img src="${o.image}" style="width:50px;height:50px;object-fit:contain;border-radius:8px;background:var(--bg-secondary)">
+          <div style="flex:1">
+            <div style="font-size:.78rem;font-weight:600;line-height:1.3">${o.name}</div>
+            <div style="font-size:.82rem;color:var(--accent-red);font-weight:700">${o.price.toFixed(2)}€</div>
+          </div>
+          <input type="checkbox" checked style="width:18px;height:18px;accent-color:var(--accent-red)" title="Décochez pour NE PAS ajouter">
+        </div>`).join('')}
+        <div style="font-size:.68rem;color:#444;margin-top:.75rem">☑️ Articles pré-sélectionnés pour votre commodité. Pour les retirer, voir les CGV section 14.3.</div>
+      </div>
+    </div>
+  </div>`;
+
+            // Product timer
+            let pt = 1 * 3600 + 47 * 60 + 23;
+            setInterval(() => {
+                if (pt <= 0) pt = 3600 + Math.floor(Math.random() * 3600);
+                pt--;
+                const hh = Math.floor(pt / 3600), mm = Math.floor((pt % 3600) / 60), ss = pt % 60;
+                const el = document.getElementById('prod-timer');
+                if (el) el.textContent = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+            }, 1000);
+
+            // Viewer count
+            setInterval(() => {
+                const el = document.getElementById('prod-viewers');
+                if (el) el.textContent = 30 + Math.floor(Math.random() * 60);
+            }, 3000);
+
+            function addToCartFromProduct() {
+                Store.addToCart(p.id);
+                location.href = 'cart.html';
+            }
+        }
+    </script>
+</body>
+
+</html>

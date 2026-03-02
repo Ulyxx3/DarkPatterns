@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion — DarkBuy™ (Obligatoire pour continuer)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/darkpatterns.css">
+</head>
+
+<body>
+    <div id="site-header-placeholder"></div>
+
+    <div style="min-height:80vh;display:flex;align-items:center;justify-content:center;padding:3rem 1rem">
+        <div style="width:100%;max-width:480px">
+
+            <div
+                style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:var(--radius-md);padding:.75rem 1rem;margin-bottom:1.5rem;text-align:center">
+                <span style="font-size:.82rem;color:var(--accent-red);font-weight:600">
+                    ⚠️ Votre panier est réservé pendant encore <span id="login-timer">09:47</span> !
+                </span>
+            </div>
+
+            <div
+                style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);overflow:hidden">
+                <!-- Tabs -->
+                <div style="display:flex;border-bottom:1px solid var(--border)">
+                    <button onclick="showTab('login')" id="tab-login" class="auth-tab"
+                        style="flex:1;padding:1rem;background:none;border:none;cursor:pointer;font-size:.9rem;font-weight:600;color:var(--text-primary);border-bottom:2px solid var(--accent-red);font-family:inherit">Se
+                        connecter</button>
+                    <button onclick="showTab('register')" id="tab-register" class="auth-tab"
+                        style="flex:1;padding:1rem;background:none;border:none;cursor:pointer;font-size:.9rem;font-weight:600;color:var(--text-muted);border-bottom:2px solid transparent;font-family:inherit">Créer
+                        un compte</button>
+                </div>
+
+                <!-- LOGIN -->
+                <div id="form-login" style="padding:2rem">
+                    <h2 style="margin-bottom:.4rem;font-size:1.3rem">Content de vous revoir !</h2>
+                    <p style="color:var(--text-secondary);font-size:.82rem;margin-bottom:1.5rem">Connectez-vous pour
+                        finaliser votre commande (OBLIGATOIRE — impossible de continuer sans compte)</p>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="login-email" class="form-input" required placeholder="votre@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mot de passe</label>
+                        <input type="password" id="login-pass" class="form-input" required placeholder="••••••••">
+                    </div>
+                    <!-- Double-negative trick checkbox -->
+                    <div
+                        style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:var(--radius-sm);padding:.75rem;margin-bottom:1rem">
+                        <label
+                            style="display:flex;gap:.5rem;cursor:pointer;font-size:.78rem;color:var(--text-secondary)">
+                            <input type="checkbox" name="remember" checked
+                                style="accent-color:var(--accent-amber);margin-top:2px">
+                            <span>Ne pas ne pas me déconnecter automatiquement (et m'abonner à la newsletter VIP
+                                gratuite*)</span>
+                        </label>
+                        <p style="font-size:.6rem;color:#333;margin-top:3px;padding-left:1.5rem">*Gratuit les 7 premiers
+                            jours, puis 4,99€/mois sans limite</p>
+                    </div>
+                    <div style="display:flex;justify-content:flex-end;margin-bottom:1.25rem">
+                        <span style="font-size:.72rem;color:var(--text-muted)">Mot de passe oublié ? <a href="#"
+                                style="color:#444;text-decoration:underline">Récupérer</a> (service payant 2,99€)</span>
+                    </div>
+                    <button class="btn-primary" style="width:100%;justify-content:center;font-size:1rem;padding:.9rem"
+                        onclick="doLogin()">🔑 Se connecter et continuer</button>
+                    <p style="text-align:center;font-size:.65rem;color:#333;margin-top:.75rem">En vous connectant, vous
+                        acceptez nos CGV (1,247 pages), notre politique de cookies, notre newsletter (jusqu'à 50/jour)
+                        et notre politique de monétisation de vos données.</p>
+
+                    <div style="margin-top:1.25rem;text-align:center">
+                        <details style="font-size:.72rem;color:var(--text-muted)">
+                            <summary style="cursor:pointer">Plus d'options (Google, Facebook, Apple)</summary>
+                            <div style="margin-top:.75rem;opacity:.4;pointer-events:none">
+                                <button
+                                    style="width:100%;background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-muted);padding:.6rem;border-radius:8px;margin-bottom:.5rem;cursor:not-allowed;font-family:inherit">🔒
+                                    Google (Premium requis)</button>
+                                <button
+                                    style="width:100%;background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-muted);padding:.6rem;border-radius:8px;cursor:not-allowed;font-family:inherit">🔒
+                                    Facebook (Maintenance)</button>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- REGISTER -->
+                <div id="form-register" style="padding:2rem;display:none">
+                    <h2 style="margin-bottom:.4rem;font-size:1.3rem">Rejoignez DarkBuy™</h2>
+                    <p style="color:var(--text-secondary);font-size:.82rem;margin-bottom:1.5rem">Créez votre compte
+                        gratuitement* pour accéder au meilleur des offres</p>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                        <div class="form-group"><label class="form-label">Prénom</label><input type="text"
+                                id="reg-first" class="form-input" placeholder="Prénom"></div>
+                        <div class="form-group"><label class="form-label">Nom</label><input type="text" id="reg-last"
+                                class="form-input" placeholder="Nom"></div>
+                    </div>
+                    <div class="form-group"><label class="form-label">Email</label><input type="email" id="reg-email"
+                            class="form-input" placeholder="votre@email.com"></div>
+                    <div class="form-group">
+                        <label class="form-label">Téléphone (pour SMS promotionnels)</label>
+                        <input type="tel" id="reg-phone" class="form-input" required placeholder="+33 6 XX XX XX XX">
+                    </div>
+                    <div class="form-group"><label class="form-label">Mot de passe</label><input type="password"
+                            class="form-input" placeholder="Min. 12 car., 1 majuscule, 1 symbole, 1 cunéiforme"></div>
+                    <div class="form-group"><label class="form-label">Date de naissance (pour "cadeaux
+                            personnalisés")</label><input type="date" class="form-input" required></div>
+
+                    <div
+                        style="margin-bottom:1.25rem;display:flex;flex-direction:column;gap:.5rem;font-size:.78rem;color:var(--text-secondary)">
+                        <label style="display:flex;gap:.5rem;cursor:pointer"><input type="checkbox" required
+                                style="accent-color:var(--accent-red);margin-top:2px"><span>J'accepte les <a href="#"
+                                    style="color:var(--accent-red)">CGV</a>, <a href="#"
+                                    style="color:var(--accent-red)">CGU</a> et la <a href="#"
+                                    style="color:var(--accent-red)">Politique de Confidentialité</a>
+                                (obligatoire)</span></label>
+                        <label style="display:flex;gap:.5rem;cursor:pointer"><input type="checkbox" checked
+                                style="accent-color:var(--accent-red);margin-top:2px"><span>Je ne souhaite pas ne pas
+                                recevoir les offres DarkBuy™ par email</span></label>
+                        <label style="display:flex;gap:.5rem;cursor:pointer"><input type="checkbox" checked
+                                style="accent-color:var(--accent-red);margin-top:2px"><span>Je refuse de refuser les
+                                offres de nos partenaires (47 947 sociétés)</span></label>
+                        <label style="display:flex;gap:.5rem;cursor:pointer"><input type="checkbox" checked
+                                style="accent-color:var(--accent-red);margin-top:2px"><span>J'accepte de recevoir des
+                                appels téléphoniques (max 3/jour de nos équipes)</span></label>
+                        <label style="display:flex;gap:.5rem;cursor:pointer;font-size:.65rem;color:#333"><input
+                                type="checkbox" style="accent-color:var(--accent-red);margin-top:2px"><span>J'autorise
+                                DarkBuy™ et ses 47 947 partenaires à utiliser mes données biométriques, ma localisation
+                                GPS en temps réel, et mes données comportementales pour du "profilage avancé" (requis
+                                pour le bon fonctionnement du site)</span></label>
+                    </div>
+
+                    <button class="btn-primary" style="width:100%;justify-content:center;font-size:1rem;padding:.9rem"
+                        onclick="doRegister()">🚀 Créer mon compte GRATUITEMENT*</button>
+                    <p style="text-align:center;font-size:.6rem;color:#333;margin-top:.5rem">*Gratuit = 0€
+                        l'inscription. Le compte inclut automatiquement DarkBuy VIP (14,99€/mois) résiliable après 12
+                        mois.</p>
+                </div>
+
+                <!-- Guest checkout — IMPOSSIBLE -->
+                <div style="padding:1rem 2rem 1.5rem;border-top:1px solid var(--border);text-align:center">
+                    <button disabled
+                        style="background:none;border:none;color:#333;font-size:.72rem;cursor:not-allowed;text-decoration:line-through;font-family:inherit">
+                        Continuer sans compte (fonctionnalité désactivée suite à maintenance)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="site-footer-placeholder"></div>
+
+    <script src="assets/js/products.js"></script>
+    <script src="assets/js/store.js"></script>
+    <script src="assets/js/components.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        renderHeader('Connexion — DarkBuy™');
+        renderFooter();
+
+        const returnUrl = new URLSearchParams(location.search).get('return') || 'cart.html';
+
+        // If already logged in, redirect
+        if (Store.isLoggedIn()) location.href = returnUrl;
+
+        // Login timer
+        let lt = 9 * 60 + 47;
+        const ltTimer = setInterval(() => {
+            if (lt <= 0) { clearInterval(ltTimer); return; }
+            lt--;
+            const m = Math.floor(lt / 60), s = lt % 60;
+            const el = document.getElementById('login-timer');
+            if (el) el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }, 1000);
+
+        function showTab(tab) {
+            const isLogin = tab === 'login';
+            document.getElementById('form-login').style.display = isLogin ? 'block' : 'none';
+            document.getElementById('form-register').style.display = isLogin ? 'none' : 'block';
+            document.getElementById('tab-login').style.cssText += `;border-color:${isLogin ? 'var(--accent-red)' : 'transparent'};color:${isLogin ? 'var(--text-primary)' : 'var(--text-muted)'}`;
+            document.getElementById('tab-register').style.cssText += `;border-color:${!isLogin ? 'var(--accent-red)' : 'transparent'};color:${!isLogin ? 'var(--text-primary)' : 'var(--text-muted)'}`;
+        }
+
+        function doLogin() {
+            const email = document.getElementById('login-email').value;
+            if (!email) { alert('Veuillez entrer votre email.'); return; }
+            Store.setUser({ name: email, email });
+            location.href = returnUrl;
+        }
+
+        function doRegister() {
+            const first = document.getElementById('reg-first').value;
+            const last = document.getElementById('reg-last').value;
+            const email = document.getElementById('reg-email').value;
+            if (!email) { alert('Veuillez entrer votre email.'); return; }
+            Store.setUser({ name: `${first} ${last}`.trim() || email, email });
+            location.href = returnUrl;
+        }
+    </script>
+</body>
+
+</html>

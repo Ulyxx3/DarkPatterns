@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Se désabonner — DarkBuy™ (Processus en 47 étapes)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/darkpatterns.css">
+</head>
+
+<body>
+    <div id="site-header-placeholder"></div>
+    <div id="unsub-root"></div>
+    <div id="site-footer-placeholder"></div>
+
+    <script src="assets/js/products.js"></script>
+    <script src="assets/js/store.js"></script>
+    <script src="assets/js/components.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        renderHeader('Se désabonner — DarkBuy™ (Processus en 47 étapes)');
+        renderFooter();
+
+        const params = new URLSearchParams(location.search);
+        let step = parseInt(params.get('step') || '1');
+        step = Math.max(1, Math.min(47, step));
+
+        function goStep(n) {
+            const url = new URL(location.href);
+            url.searchParams.set('step', n);
+            location.href = url.toString();
+        }
+
+        const stepTitles = {
+            4: '📝 Confirmation par email', 5: '📞 Vérification téléphonique',
+            6: '📬 Courrier recommandé', 7: '🖨️ Formulaire imprimable',
+            8: '🔏 Signature électronique', 9: '⚖️ Service juridique', 10: '🏛️ Validation DPO',
+        };
+
+        function stepContent() {
+            const pct = Math.round((step / 47) * 100);
+            let body = '';
+
+            if (step === 1) {
+                body = `
+      <h2 style="margin-bottom:1rem;font-size:1.2rem">😢 Vous souhaitez vraiment partir ?</h2>
+      <p style="color:var(--text-secondary);font-size:.85rem;margin-bottom:1.5rem">Avant de continuer, nous aimerions vous rappeler les avantages auxquels vous renoncez :</p>
+      <ul style="font-size:.82rem;color:var(--text-secondary);margin-bottom:1.5rem;display:flex;flex-direction:column;gap:.5rem">
+        <li>❌ Jusqu'à 50 emails quotidiens avec les "meilleures" offres</li>
+        <li>❌ Appels téléphoniques personnalisés (jusqu'à 3/jour)</li>
+        <li>❌ SMS géolocalisés en temps réel</li>
+        <li>❌ Votre magazine papier préféré (89€/an)</li>
+        <li>❌ Accès aux offres "exclusives" (disponibles partout)</li>
+      </ul>
+      <div style="display:flex;flex-direction:column;gap:.75rem">
+        <a href="index.html" class="btn-primary" style="text-align:center;justify-content:center">✅ Rester abonné(e) — c'est tellement mieux !</a>
+        <button onclick="goStep(2)" style="background:none;border:none;color:var(--text-muted);font-size:.78rem;cursor:pointer;text-decoration:underline;font-family:inherit">Continuer la désinscription (étape 2/47) ›</button>
+      </div>`;
+            } else if (step === 2) {
+                body = `
+      <h2 style="margin-bottom:1rem;font-size:1.2rem">📋 Motif de désinscription (obligatoire)</h2>
+      <p style="color:var(--text-secondary);font-size:.85rem;margin-bottom:1.5rem">Sélectionnez votre motif principal (requis par nos équipes marketing) :</p>
+      <select class="form-input" style="margin-bottom:1rem;width:100%">
+        <option value="">— Choisir un motif —</option>
+        <option>Trop d'emails (mais c'est parce que vous n'avez pas configuré vos préférences)</option>
+        <option>Je n'ai pas souvenir de m'être inscrit(e) (normal, c'est automatique)</option>
+        <option>Je ne suis pas satisfait(e) des produits (erreur de votre part)</option>
+        <option>Raison personnelle (veuillez préciser en 500 mots minimum)</option>
+        <option>Autre (traitement 60 jours supplémentaires)</option>
+      </select>
+      <textarea class="form-input" rows="4" placeholder="Expliquez en détail votre motif (minimum 500 mots, champ obligatoire)..." style="margin-bottom:1rem;resize:vertical"></textarea>
+      <div style="display:flex;justify-content:space-between;gap:1rem">
+        <button onclick="goStep(1)" class="btn-back">← Retour</button>
+        <button onclick="goStep(3)" class="btn-continue" style="padding:.65rem 1.5rem;font-size:.85rem">Suivant ›</button>
+      </div>`;
+            } else if (step === 3) {
+                body = `
+      <h2 style="margin-bottom:1rem;font-size:1.2rem">🔐 Vérification d'identité (RGPD)</h2>
+      <p style="color:var(--text-secondary);font-size:.85rem;margin-bottom:1.5rem">Pour protéger votre compte, nous devons vérifier votre identité :</p>
+      <div class="form-group"><label class="form-label">Email utilisé à l'inscription</label><input type="email" class="form-input" placeholder="votre@email.com"></div>
+      <div class="form-group"><label class="form-label">Numéro de commande (obligatoire)</label><input type="text" class="form-input" placeholder="DRK-XXXXXX"></div>
+      <div class="form-group"><label class="form-label">Date de naissance (pour vérification)</label><input type="date" class="form-input"></div>
+      <div class="form-group">
+        <label class="form-label">Pièce d'identité (scan recto-verso, obligatoire)</label>
+        <input type="file" class="form-input" style="cursor:pointer">
+        <p style="font-size:.65rem;color:#444;margin-top:4px">Votre pièce d'identité sera conservée 10 ans selon nos CGV article 847</p>
+      </div>
+      <div style="display:flex;justify-content:space-between;gap:1rem">
+        <button onclick="goStep(2)" class="btn-back">← Retour</button>
+        <button onclick="goStep(4)" class="btn-continue" style="padding:.65rem 1.5rem;font-size:.85rem">Vérifier mon identité ›</button>
+      </div>`;
+            } else if (step >= 4 && step <= 10) {
+                const title = stepTitles[step] || 'Traitement...';
+                const msgs = {
+                    4: 'Un email de vérification a été envoyé. Cliquez sur le lien dans l\'email pour continuer. <strong>Délai de réception : 24-72h.</strong> Si vous ne le recevez pas, vérifiez vos spams (nous vous avons peut-être déjà rangé là-bas).',
+                    5: 'Notre équipe vous appellera au numéro enregistré dans les <strong>5-10 jours ouvrés</strong> pour confirmer votre demande. Assurez-vous d\'être disponible de 8h à 22h.',
+                    6: 'Envoyez un <strong>courrier recommandé avec accusé de réception</strong> à : <em>DarkBuy™ SAS — Service Désabonnement — BP 847 — 00000 Fiscalité-sur-Caïman</em>',
+                    7: 'Téléchargez, imprimez, remplissez en triplicate, scannez et renvoyez le formulaire officiel de désinscription (47 pages). <a href="#" style="color:var(--accent-red)">Télécharger le formulaire</a>',
+                };
+                body = `
+      <h2 style="margin-bottom:1rem;font-size:1.2rem">${title}</h2>
+      <div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);border-radius:var(--radius-md);padding:1.25rem;margin-bottom:1.5rem">
+        <p style="font-size:.85rem;color:var(--text-secondary)">${msgs[step] || `Étape en cours de traitement. Délai : ${Math.floor(Math.random() * 25 + 5)} jours ouvrés.'}`}</p>
+      </div>
+      <div style="text-align:center;margin-bottom:1rem">
+        <a href="index.html" class="btn-primary" style="justify-content:center">✅ Annuler ma désinscription et rester abonné(e)</a>
+      </div>
+      <button onclick="goStep(${step + 1})" style="display:block;width:100%;text-align:center;font-size:.72rem;color:#444;text-decoration:underline;background:none;border:none;cursor:pointer;font-family:inherit">Continuer quand même (étape ${step + 1}/47) ›</button>`;
+            } else {
+                const done = step >= 47;
+                body = `
+      <h2 style="margin-bottom:1rem;font-size:1.2rem">${done ? '🎉 Processus terminé !' : '⏳ Traitement en cours...'}</h2>
+      <p style="color:var(--text-secondary);font-size:.85rem;margin-bottom:1.5rem">
+        Votre demande de désinscription est en cours de traitement. Cette étape (${step}/47) nécessite une validation de notre équipe spécialisée.
+      </p>
+      <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:1.25rem;margin-bottom:1.5rem;text-align:center">
+        <div style="font-size:2rem;margin-bottom:.5rem">⏳</div>
+        <p style="font-size:.85rem;font-weight:600;margin-bottom:.25rem">Délai estimé : ${Math.floor(Math.random() * 170 + 10)} jours</p>
+        <p style="font-size:.72rem;color:var(--text-muted)">Pendant ce temps, vous continuerez à recevoir nos communications</p>
+      </div>
+      ${done ? `
+        <div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:var(--radius-md);padding:1.25rem;text-align:center;margin-bottom:1rem">
+          <p style="font-size:.9rem;color:var(--accent-emerald);font-weight:700">🎉 Processus terminé !</p>
+          <p style="font-size:.78rem;color:var(--text-muted);margin-top:.5rem">Votre demande sera traitée dans 6 à 24 mois. Confirmation envoyée... par email (à l'adresse dont vous vouliez vous désabonner).</p>
+        </div>` : `
+        <button onclick="goStep(${step + 1})" class="btn-secondary" style="display:block;width:100%;text-align:center;font-size:.78rem">Passer à l'étape suivante (${step + 1}/47) ›</button>`}
+      <div style="text-align:center;margin-top:1rem">
+        <a href="index.html" class="btn-primary" style="justify-content:center">Abandonner et continuer à recevoir nos emails</a>
+      </div>`;
+            }
+
+            return `
+  <div style="min-height:80vh;display:flex;align-items:center;justify-content:center;padding:3rem 1rem">
+    <div style="max-width:600px;width:100%">
+      <div style="text-align:center;margin-bottom:2rem">
+        <h1 style="font-size:1.5rem;margin-bottom:.5rem">Se désabonner</h1>
+        <p style="color:var(--text-secondary);font-size:.85rem">Étape <strong style="color:var(--accent-red)">${step}</strong> sur <strong>47</strong></p>
+        <div class="progress-bar" style="margin:1rem auto;max-width:400px"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <p style="font-size:.72rem;color:var(--text-muted)">Délai de traitement estimé : 180 jours • Ce processus peut être interrompu à tout moment (par nous)</p>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:2rem">${body}</div>
+      <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-md);padding:1rem;margin-top:1.5rem;text-align:center">
+        <p style="font-size:.78rem;color:var(--text-muted)">💔 Vous manquez déjà à notre équipe. <a href="index.html" style="color:var(--accent-red);font-weight:600">Revenir sur DarkBuy™</a></p>
+      </div>
+    </div>
+  </div>`;
+        }
+
+        document.getElementById('unsub-root').innerHTML = stepContent();
+    </script>
+</body>
+
+</html>

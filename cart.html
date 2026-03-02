@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Panier — DarkBuy™ | Finaliser ma commande</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/darkpatterns.css">
+</head>
+
+<body>
+    <div id="site-header-placeholder"></div>
+    <div id="cart-root"></div>
+    <div id="site-footer-placeholder"></div>
+
+    <script src="assets/js/products.js"></script>
+    <script src="assets/js/store.js"></script>
+    <script src="assets/js/components.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        renderHeader('Mon Panier — DarkBuy™');
+        renderFooter();
+
+        // Redirect to login if not logged in
+        if (!Store.isLoggedIn()) {
+            location.href = 'login.html?return=cart.html';
+        }
+
+        // Ensure at least one item in cart for demo
+        if (Store.getCartCount() === 0) {
+            const p = getProduct(1);
+            const cart = {};
+            cart[1] = { id: 1, name: p.name, price: p.price, qty: 1, image: p.image, subscription: true, subscriptionPrice: p.subscriptionPrice };
+            Store.saveCart(cart);
+        }
+
+        const params = new URLSearchParams(location.search);
+        let step = parseInt(params.get('step') || '1');
+        step = Math.max(1, Math.min(5, step));
+
+        function goStep(n) {
+            const url = new URL(location.href);
+            url.searchParams.set('step', n);
+            location.href = url.toString();
+        }
+
+        const STEP_LABELS = [
+            { icon: '👤', label: 'Compte' }, { icon: '🍪', label: 'Cookies' },
+            { icon: '📧', label: 'Abonnements' }, { icon: '📋', label: 'Récapitulatif' }, { icon: '✅', label: 'Confirmation' },
+        ];
+
+        function stepsHTML() {
+            return STEP_LABELS.map((s, i) => {
+                const n = i + 1;
+                const cls = n < step ? 'done' : (n === step ? 'active' : '');
+                return `
+      <div class="step-item ${cls}">
+        <div class="step-num">${n < step ? '✓' : s.icon}</div>
+        <span>${s.label}</span>
+      </div>
+      ${n < 5 ? `<div class="step-connector ${n < step ? 'done' : ''}"></div>` : ''}`;
+            }).join('');
+        }
+
+        function cartItems() { return Object.values(Store.getCart()); }
+
+        function summaryHTML(showExtras = false) {
+            const items = cartItems();
+            let html = `<div class="order-summary"><h3 style="margin-bottom:1rem;font-size:1rem">🛒 Récapitulatif</h3>`;
+            items.forEach(item => {
+                const p = getProduct(item.id);
+                const price = p ? p.cartPrice : item.price * 2;
+                html += `<div class="order-line">
+      <span style="font-size:.8rem;color:var(--text-secondary)">${item.name.substring(0, 22)}...</span>
+      <span style="font-size:.82rem;font-weight:600">${price.toFixed(2)}€</span>
+    </div>`;
+            });
+            if (showExtras) {
+                Store.EXTRAS.forEach(e => {
+                    html += `<div class="order-line">
+        <span class="hidden-fee" style="font-size:.72rem;color:var(--text-muted)">${e.name}</span>
+        <span style="font-size:.78rem;color:var(--accent-red)">+${e.price.toFixed(2)}€</span>
+      </div>`;
+                });
+            } else {
+                html += `<div class="order-line">
+      <span style="font-size:.78rem;color:var(--text-muted)">Livraison</span>
+      <span style="color:var(--accent-emerald);font-size:.82rem;font-weight:600">Gratuite*</span>
+    </div>
+    <div class="order-line">
+      <span style="font-size:.72rem;color:#333">*Frais et taxes</span>
+      <span style="font-size:.72rem;color:#444">révélés à l'étape 4</span>
+    </div>`;
+            }
+            const sub = Store.getCartSubtotal();
+            const total = sub + (showExtras ? Store.getExtrasTotal() : 0);
+            html += `<div class="order-line total"><span>Total${showExtras ? ' réel' : ' estimé'}</span><span>${total.toFixed(2)}€</span></div>`;
+            if (!showExtras) html += `<p style="font-size:.62rem;color:#333;margin-top:.5rem">* Total peut varier. Frais révélés à l'étape 4.</p>`;
+            html += `<div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);border-radius:8px;padding:.75rem;margin-top:1rem;text-align:center">
+    <p style="font-size:.75rem;color:var(--accent-red);font-weight:600">⚠️ <span id="sidebar-viewers">3</span> personnes ont ce panier</p>
+    <p style="font-size:.68rem;color:var(--text-muted)">Stocks limités — ne tardez pas !</p>
+  </div></div>`;
+            return html;
+        }
+
+        function renderStep() {
+            let stepContent = '';
+
+            if (step === 1) {
+                stepContent = `
+    <div class="checkout-card">
+      <h2>✅ Étape 1 — Confirmation de compte</h2>
+      <p class="step-description">Bonjour <strong>${Store.getUser()?.name?.split('@')[0] || 'Client'}</strong> ! Pour continuer, veuillez confirmer vos informations et accepter nos nouvelles conditions.</p>
+      <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:var(--radius-md);padding:1rem;margin-bottom:1.25rem">
+        <p style="font-size:.82rem;color:var(--accent-amber);margin-bottom:.75rem;font-weight:600">⚠️ Nos conditions ont été mises à jour. Veuillez re-accepter pour continuer.</p>
+        <label style="display:flex;gap:.5rem;cursor:pointer;font-size:.82rem;margin-bottom:.5rem">
+          <input type="checkbox" id="tos-check" style="accent-color:var(--accent-red)">
+          <span>J'accepte les nouvelles Conditions (version 847.3, mises à jour il y a 2 minutes)</span>
+        </label>
+        <label style="display:flex;gap:.5rem;cursor:pointer;font-size:.82rem">
+          <input type="checkbox">
+          <span>J'accepte d'avance toutes les futures modifications des CGV (sans notification)</span>
+        </label>
+      </div>
+      <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem;margin-bottom:1.25rem">
+        <h4 style="margin-bottom:.5rem;font-size:.9rem">👥 Invitez vos amis pour débloquer votre commande</h4>
+        <p style="font-size:.78rem;color:var(--text-secondary);margin-bottom:.75rem">DarkBuy™ est meilleur quand on est nombreux ! Entrez l'email de 2 amis pour continuer votre achat.</p>
+        <input type="email" placeholder="email.ami1@example.com" class="form-input" style="margin-bottom:.5rem">
+        <input type="email" placeholder="email.ami2@example.com" class="form-input">
+        <p style="font-size:.62rem;color:#444;margin-top:.5rem">Vos amis recevront des emails de DarkBuy™ sans leur consentement explicite.</p>
+      </div>
+      <div class="checkout-nav">
+        <a href="index.html" class="btn-back">← Retour aux produits</a>
+        <button class="btn-continue" onclick="if(!document.getElementById('tos-check').checked){alert('Vous devez accepter nos nouvelles conditions.');return;}goStep(2)">Continuer — Étape 2 sur 5 →</button>
+      </div>
+    </div>`;
+
+            } else if (step === 2) {
+                const cookieOpts = [
+                    ['Cookies fonctionnels', true, true, 'Absolument requis pour traiter votre paiement (non désactivable)'],
+                    ['Cookies analytiques de performance commande', true, false, 'Permettent de "suivre" votre commande (et analyser vos habitudes pour revente)'],
+                    ['Cookies de personnalisation marketing', true, false, 'Pour vous envoyer des offres pertinentes (jusqu\'à 50 emails/jour)'],
+                    ['Partage données partenaires commande', true, false, 'Vos données partagées avec nos 47 947 partenaires pour "optimisation logistique"'],
+                    ['Profiling comportemental premium', true, false, 'Analyse via webcam et microphone pour améliorer votre "expérience d\'achat"'],
+                    ['Cookies de recommandation intelligente', true, false, 'IA qui prédit vos futurs achats (et décide pour vous)'],
+                ];
+                stepContent = `
+    <div class="checkout-card">
+      <h2>🍪 Étape 2 — Paramètres de Confidentialité</h2>
+      <p class="step-description">Avant de finaliser votre commande, configurez vos préférences. <strong>Toutes les options ci-dessous sont nécessaires</strong> pour le bon traitement de votre commande.</p>
+      <div style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.5rem">
+        ${cookieOpts.map(([label, checked, disabled, desc]) => `
+        <div class="trick-checkbox">
+          <label class="trick-label">
+            <input type="checkbox" ${checked ? 'checked' : ''} ${disabled ? 'disabled' : ''} style="width:18px;height:18px;accent-color:var(--accent-red)">
+            <div class="trick-label-text">
+              <strong>${label}${disabled ? ' <span style="color:var(--accent-red)">(obligatoire)</span>' : ''}</strong>
+              <span>${desc}</span>
+            </div>
+          </label>
+        </div>`).join('')}
+      </div>
+      <div style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:var(--radius-sm);padding:.75rem;margin-bottom:1.5rem">
+        <p style="font-size:.72rem;color:var(--accent-emerald)">💡 <strong>Conseil :</strong> Garder toutes les options activées vous offre la meilleure expérience et des "prix personnalisés".</p>
+      </div>
+      <div class="checkout-nav">
+        <button class="btn-back" onclick="goStep(1)">← Retour</button>
+        <button class="btn-continue" onclick="goStep(3)">Accepter et continuer →</button>
+      </div>
+    </div>`;
+
+            } else if (step === 3) {
+                const comms = [
+                    ['Newsletter DarkBuy™ Premium', true, '🎁 CADEAU', "Jusqu'à 50 emails/jour. Résiliable après 12 mois."],
+                    ['Emails partenaires (47 947 marques)', true, '⭐ BEST-SELLER', 'Offres de nos partenaires. Fréquence: illimitée.'],
+                    ['SMS promotionnels (jusqu\'à 50/jour)', true, '🔔 INCLUS', 'Frais opérateur peuvent s\'appliquer. Non résiliable pendant 6 mois.'],
+                    ['Appels téléphoniques commerciaux', true, null, 'Notre équipe vous appellera. Horaires : 8h-22h, 7j/7.'],
+                    ['Notifications WhatsApp business', true, '⚡ NOUVEAU', 'Offres géolocalisées basées sur votre GPS en temps réel.'],
+                    ['Ne PAS recevoir le magazine papier mensuel (89€/an)', false, null, 'Décochez pour recevoir notre magazine (vous serez facturé automatiquement).'],
+                ];
+                stepContent = `
+    <div class="checkout-card">
+      <h2>📧 Étape 3 — Vos Préférences de Communication</h2>
+      <p class="step-description">Configurez comment vous souhaitez être contacté(e). Ces paramètres peuvent être modifiés dans votre espace personnel (accès premium requis, 9,99€/mois).</p>
+      <div style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.5rem">
+        ${comms.map(([label, checked, badge, desc]) => `
+        <div class="trick-checkbox" style="position:relative">
+          ${badge ? `<div style="position:absolute;top:-10px;right:10px;background:var(--gradient-accent);color:white;font-size:.55rem;font-weight:900;padding:2px 8px;border-radius:4px">${badge}</div>` : ''}
+          <label class="trick-label">
+            <input type="checkbox" ${checked ? 'checked' : ''} style="width:18px;height:18px;accent-color:var(--accent-red)">
+            <div class="trick-label-text"><strong>${label}</strong><span>${desc}</span></div>
+          </label>
+        </div>`).join('')}
+      </div>
+      <div style="background:linear-gradient(135deg,rgba(139,92,246,.1),rgba(59,130,246,.1));border:1px solid rgba(139,92,246,.25);border-radius:var(--radius-md);padding:1.25rem;margin-bottom:1.5rem">
+        <h4 style="font-size:.9rem;margin-bottom:.5rem">🎁 Offre Parrainage (Obligatoire pour continuer)</h4>
+        <p style="font-size:.78rem;color:var(--text-secondary);margin-bottom:.75rem">Invitez 3 amis supplémentaires pour accéder à l'étape suivante.</p>
+        <input type="email" placeholder="ami3@email.com" class="form-input" style="margin-bottom:.5rem">
+        <input type="email" placeholder="ami4@email.com" class="form-input" style="margin-bottom:.5rem">
+        <input type="email" placeholder="ami5@email.com" class="form-input">
+        <p style="font-size:.6rem;color:#333;margin-top:.5rem">*En leur nom bien sûr. Ils adoreront.</p>
+      </div>
+      <div class="checkout-nav">
+        <button class="btn-back" onclick="goStep(2)">← Retour</button>
+        <button class="btn-continue" onclick="goStep(4)">Continuer vers le récapitulatif →</button>
+      </div>
+    </div>`;
+
+            } else if (step === 4) {
+                const items = cartItems();
+                const cartItemsHTML = items.map(item => {
+                    const p = getProduct(item.id);
+                    const cartPrice = p ? p.cartPrice : item.price * 2;
+                    return `<div style="display:flex;gap:1rem;align-items:center;padding:1rem;background:var(--bg-secondary);border-radius:var(--radius-md);margin-bottom:.75rem">
+        <img src="${item.image}" style="width:60px;height:60px;object-fit:contain;border-radius:8px;background:var(--bg-card)">
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:.88rem">${item.name}</div>
+          <div style="font-size:.72rem;color:var(--text-muted)">Qté: ${item.qty}</div>
+          <div style="margin-top:4px">
+            <span style="font-size:.7rem;color:var(--text-muted);text-decoration:line-through">${item.price.toFixed(2)}€</span>
+            <span style="font-size:.82rem;color:var(--accent-orange);font-weight:700;margin-left:4px">${cartPrice.toFixed(2)}€ <span style="font-size:.6rem">(prix final mis à jour)</span></span>
+          </div>
+          ${item.subscription ? `<div style="font-size:.7rem;color:var(--accent-amber)">+ Abonnement inclus: ${item.subscriptionPrice.toFixed(2)}€/mois</div>` : ''}
+        </div>
+      </div>`;
+                }).join('');
+
+                const extrasHTML = Store.EXTRAS.map(e => `
+      <div style="display:flex;align-items:center;gap:.75rem;padding:.6rem;background:var(--bg-secondary);border-radius:8px;margin-bottom:.4rem">
+        <input type="checkbox" checked ${e.required ? 'disabled' : ''} style="accent-color:var(--accent-red)">
+        <span style="flex:1;font-size:.8rem;color:var(--text-secondary)">${e.name}</span>
+        <span style="font-size:.82rem;font-weight:600;color:var(--accent-red)" class="hidden-fee">+${e.price.toFixed(2)}€</span>
+      </div>`).join('');
+
+                const total = Store.getCartSubtotal() + Store.getExtrasTotal();
+
+                stepContent = `
+    <div class="checkout-card">
+      <h2>📋 Étape 4 — Récapitulatif de Commande</h2>
+      <p class="step-description">Vérifiez votre commande avant de payer. <span style="color:var(--accent-orange)">⚠️ Certains prix ont été mis à jour depuis votre dernière visite.</span></p>
+      <div style="margin-bottom:1.5rem">${cartItemsHTML}</div>
+      <div style="margin-bottom:1.5rem">
+        <h4 style="font-size:.85rem;margin-bottom:.75rem;color:var(--accent-orange)">⚡ Services inclus automatiquement <span style="font-size:.65rem;color:var(--text-muted)">(certains sont obligatoires)</span></h4>
+        ${extrasHTML}
+      </div>
+      <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem;margin-bottom:1.5rem">
+        <h4 style="margin-bottom:1rem;font-size:.9rem">💳 Informations de paiement</h4>
+        <div class="form-group"><label class="form-label">Numéro de carte</label><input type="text" class="form-input" placeholder="•••• •••• •••• ••••" maxlength="19"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div class="form-group"><label class="form-label">Date d'expiration</label><input type="text" class="form-input" placeholder="MM/AA"></div>
+          <div class="form-group"><label class="form-label">CVC</label><input type="text" class="form-input" placeholder="•••"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mode de livraison</label>
+          <select class="form-input">
+            <option>Livraison Standard 5-7j (+0€) — mais votre colis pourrait se perdre</option>
+            <option selected>⭐ Livraison Express Garantie 2j (+12,99€) — RECOMMANDÉ</option>
+            <option>Livraison Premium 24h (+24,99€)</option>
+          </select>
+        </div>
+      </div>
+      <div class="checkout-nav">
+        <button class="btn-back" onclick="goStep(3)">← Retour</button>
+        <button class="btn-continue" style="background:linear-gradient(135deg,#10b981,#059669)" onclick="goStep(5)">🔒 Payer ${total.toFixed(2)}€ maintenant →</button>
+      </div>
+      <p style="text-align:center;font-size:.62rem;color:#333;margin-top:.75rem">En cliquant «Payer», vous confirmez votre accord avec nos CGV, acceptez l'abonnement DarkCare+ automatique, autorisez nos partenaires à vous contacter, et renoncez à tout droit de rétractation.</p>
+    </div>`;
+
+            } else if (step === 5) {
+                // Clear cart on confirmation
+                Store.clearCart();
+                const orderId = Math.floor(Math.random() * 900000 + 100000);
+                const days = Math.floor(Math.random() * 43 + 5);
+                const upsellerHTML = getAllProducts().slice(1, 5).map(up => `
+      <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-md);padding:1rem">
+        <img src="${up.image}" style="width:100%;height:80px;object-fit:contain;border-radius:8px;background:var(--bg-card);margin-bottom:.5rem">
+        <div style="font-size:.78rem;font-weight:600;margin-bottom:2px;line-height:1.3">${up.name}</div>
+        <div style="font-size:.85rem;color:var(--accent-red);font-weight:700">${up.price.toFixed(2)}€</div>
+        <a href="product.html?id=${up.id}" class="btn-primary" style="font-size:.72rem;padding:.4rem .8rem;margin-top:.5rem;display:inline-flex">Ajouter →</a>
+      </div>`).join('');
+
+                stepContent = `
+    <div class="checkout-card" style="text-align:center">
+      <div style="font-size:4rem;margin-bottom:1rem">🎉</div>
+      <div style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);border-radius:50px;display:inline-block;padding:4px 16px;font-size:.78rem;color:var(--accent-emerald);font-weight:700;margin-bottom:1rem">✅ COMMANDE CONFIRMÉE</div>
+      <h2 style="margin-bottom:.75rem">Merci pour votre commande !</h2>
+      <p style="color:var(--text-secondary);margin-bottom:.5rem">Commande n° DRK-${orderId} confirmée. Livraison estimée : ${days} jours ouvrés.</p>
+      <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:var(--radius-md);padding:1rem;margin:1.5rem 0;text-align:left">
+        <h4 style="margin-bottom:.75rem;font-size:.9rem;color:var(--accent-amber)">⚠️ Ce qui a été ajouté à votre compte :</h4>
+        <ul style="font-size:.78rem;color:var(--text-secondary);display:flex;flex-direction:column;gap:.4rem">
+          <li>✉️ Abonnement newsletter (jusqu'à 50 emails/jour)</li>
+          <li>💳 DarkCare+ (14,99€/mois — résiliable après 12 mois)</li>
+          <li>📦 Abonnement Magazine Papier (89€/an)</li>
+          <li>☎️ Inscription au programme d'appels commerciaux</li>
+          <li>📊 Votre profil comportemental vendu à 47 947 partenaires</li>
+        </ul>
+        <p style="font-size:.65rem;color:#444;margin-top:.75rem">Pour annuler ces services: <a href="unsubscribe.html" style="color:#555">désabonnement</a> (47 étapes).</p>
+      </div>
+      <h3 style="margin-bottom:1rem">🔥 Complétez votre commande !</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;text-align:left;margin-bottom:2rem">${upsellerHTML}</div>
+      <a href="index.html" class="btn-primary" style="justify-content:center">🛒 Continuer mes achats</a>
+      <div style="background:linear-gradient(135deg,rgba(139,92,246,.1),rgba(59,130,246,.1));border:1px solid rgba(139,92,246,.25);border-radius:var(--radius-md);padding:1.25rem;margin-top:2rem;text-align:left">
+        <h4 style="margin-bottom:.5rem;font-size:.9rem">📱 Téléchargez l'app DarkBuy™ !</h4>
+        <p style="font-size:.78rem;color:var(--text-secondary);margin-bottom:.75rem"><strong style="color:var(--accent-red)">Requis pour suivre votre colis.</strong></p>
+        <div style="display:flex;gap:.75rem">
+          <a href="#" class="btn-primary" style="padding:.6rem 1rem;font-size:.8rem">🍎 App Store</a>
+          <a href="#" class="btn-primary" style="padding:.6rem 1rem;font-size:.8rem">🤖 Google Play</a>
+        </div>
+        <p style="font-size:.6rem;color:#333;margin-top:.5rem">L'app inclut 3 mois d'accès DarkBuy VIP (puis 14,99€/mois)</p>
+      </div>
+    </div>`;
+            }
+
+            document.getElementById('cart-root').innerHTML = `
+  <div class="checkout-container">
+    <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:var(--radius-md);padding:.75rem 1.5rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+      <span style="font-size:.85rem;color:var(--text-secondary)">⏰ Votre panier est réservé pendant : <strong style="color:var(--accent-red)" id="cart-timer">09:47</strong></span>
+      <span style="font-size:.78rem;color:var(--accent-orange)">🔴 <strong>3 personnes</strong> ont ce même panier en ce moment</span>
+    </div>
+    <div class="checkout-steps">${stepsHTML()}</div>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:2rem;align-items:start">
+      <div>${stepContent}</div>
+      ${summaryHTML(step >= 4)}
+    </div>
+  </div>`;
+
+            // Cart timer
+            let ct = 9 * 60 + 47;
+            const ctEl = document.getElementById('cart-timer');
+            setInterval(() => {
+                if (ct <= 0) { if (ctEl) ctEl.textContent = 'EXPIRÉ !'; return; }
+                ct--;
+                const m = Math.floor(ct / 60), s = ct % 60;
+                if (ctEl) ctEl.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            }, 1000);
+
+            // Sidebar viewers
+            setInterval(() => {
+                const el = document.getElementById('sidebar-viewers');
+                if (el) el.textContent = 2 + Math.floor(Math.random() * 8);
+            }, 3000);
+        }
+
+        renderStep();
+    </script>
+</body>
+
+</html>
